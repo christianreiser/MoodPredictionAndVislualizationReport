@@ -8,6 +8,7 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{pgfplots}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -20,23 +21,23 @@
 \author{
 
 \IEEEauthorblockN{Christian Reiser}
-\IEEEauthorblockA{\textit{Simulation Technology} \\
+\IEEEauthorblockA{
 \textit{University of Stuttgart}\\
 Stuttgart, Germany \\
 christian.reiser@insightme.org}
 
 \and
 
-\IEEEauthorblockN{Tanja Blaschek}
-\IEEEauthorblockA{\textit{Institute for Visualization and Interactive Systems} \\
+\IEEEauthorblockN{Tanja Blascheck}
+\IEEEauthorblockA{
 \textit{University of Stuttgart}\\
 Stuttgart, Germany \\
-Tanja.Blascheck@vis.uni-stuttgart.de}
+tanja.blascheck@vis.uni-stuttgart.de}
 
 \and
 
 \IEEEauthorblockN{Benedikt V. Ehinger}
-\IEEEauthorblockA{\textit{Institute for Visualization and Interactive Systems} \\
+\IEEEauthorblockA{
 \textit{University of Stuttgart}\\
 Stuttgart, Germany \\
 benedikt.ehinger@vis.uni-stuttgart.de}
@@ -46,17 +47,23 @@ benedikt.ehinger@vis.uni-stuttgart.de}
 \maketitle
 
 \begin{abstract}
-Do Not Use Symbols, Special Characters, Footnotes, 
-or Math in Paper Title or Abstract.
+We offer the code for this work in open source.
+\color{red}
+...\\
+...\\
+...
+\color{black}
+
 \end{abstract}
 
 \begin{IEEEkeywords}
 machine learning, visualization, subjective well-being, mobile, quantified-self
 \end{IEEEkeywords}
 
+%=============================================================================
 \section{Introduction}
 We know that our environment and actions play a major role in our well-being, health, intellectual and athletic performance.
-However, there is less certainty about how much our environment (e.g., weather, air quality, noise) or behavior (e.g., nutrition, exercise, meditation, sleep) influence our happiness, productivity, sport performance, or allergies.
+However, there is less certainty about how much our environment (e.g., weather, air quality, noise) or behavior (e.g., nutrition, exercise, meditation, sleep) influence our happiness, productivity, sports performance, or allergies.
 Furthermore, on some days, we are surprised that we are less motivated, our athletic performance is poor, or the disease symptoms are more severe.
 
 To understand ourselves better, we built a system that predicts a variable of interest like well-being from past behavior and environmental data.
@@ -64,8 +71,8 @@ The system explains the predictions by visualizing its reasoning.
 
 This paper focuses on daily subjective well-being and explores its associations with outdoor and indoor weather, sleep and exercise, body weight, nutrition, heart rate, screentime, and productivity.
 
-\section{Related Work}
-\section{How is well-being defined?}
+
+\subsection{How is well-being defined?}
 Psychologists often refer to subjective well-being (SWB) as frequent positive affect, infrequent negative affect, and cognitive evaluations of what a person considers a good life \cite{tov_subjective_2013}.
 
 such as being enthusiastic, energetic, confident, active, and alert, optimistic, happy, joyful, curious, excited, relaxed, grateful
@@ -77,55 +84,78 @@ To gather well-being data, we built a mobile app that asks the user to rate the 
 
 \subsection{How is well-being measured?}
 Rating in the evening before sleep:
-Taking all together, how satisfied or dissatisfied were you
-today on a scale from one to nine?
+Taking all together, how satisfied or dissatisfied were you today on a scale from one to nine?
 
-This rating mechanism has downsides due to recency bias, leading to the greater importance of recent events and fading affect bias, where negative memories fade faster than positive ones (Skowronski, Walker, et al. 2014).
+This rating mechanism has downsides due to recency bias, leading to the greater importance of recent events and fading affect bias, where negative memories fade faster than positive ones (Skowronski, Walker, et al., 2014).
 Asking for a rating multiple times per day would reduce these biases; however, we decided against it, as it requires more effort and thus is less sustainable over long periods. 
 
 
 
-\section{Datasources}
-The aim is to use non-intrusive, inexpensive sensors and services that are robust and easy to use over a few years. A list of all data sources and explanations can be found in the Appendix.
+%=============================================================================
+
+\section{Related Work}
+This section provides an overview of relevant work, with a focus on (\ref{sec:wellbeing}) well-being prediction and (\ref{sec:apps}) related mobile applications.
+
+\subsection{Prediction of well-being}
+\label{sec:wellbeing}
+
+In the last decade, affective computing stated to explore predicting mood, wellbeing, happiness and emotion from sensor data gathered through a varierty of sources.
+
+An unimodal heartbeat time series, measured with a professional EGC device has been shown to predict emotional valence, when the participant is seated. \cite{harper_bayesian_2020}\\
 
 
-\section{Data Aggregation}
-These data types' sampling rates vary between 5 minutes (e.g., heart rate) to ~ weekly (bodyweight and VO2Max).
-The goal is the have a sampling rate of 24h.
-In most cases, the sampling rate is >24h, and the data is aggregated in 24h intervals by taking the sum, fifth percentile, 95th percentile, and median.
+Major depressive disorder can be detected with an average accuracy of ~70\% from twitter behavior, in a study of twitter users, who posted more than 4500 tweets on average\cite{choudhury_predicting_2013}.\\ 
+
+Several studies estimated mood, stress and health with data from multimodal wearable sensors, a smartphone app, and daily manually reported behaviors such as academic activities, exercise claiming maximum accuracies of mood of
+ 68.48\%\cite{jaques_predicting_2015},
+ 74.3\%\cite{jaques_multi-task_2015},
+ 82.52\%\cite{jaques_multi-task_2016} all with a baseline of  53.94. Another study achieves 78.7\% with a baseline of 50.4\%\cite{taylor_personalized_2020}. 
+ 
+
+The above mentioned studies might be less practical for long term every day usage as expensive professional equipment, time consuming manual reporting of activity duration or frequent social media behavior is needed.
+
+Therefore, we focus on cheap and passive data-sources, requiring minimal attention in everyday life.
+
+It has been shown that mood can be predicted from passive data, specifically keyboard and application data from mobile phones with a maximum accuracy of 66.59\% (62.65\% if without text) compared to a baseline of 40.18\% \cite{liu_multimodal_2020}\\
+
+
+\subsection{Related Apps}
+\label{sec:apps}
+
+There are several apps which allow users to track their mood  \cite{noauthor_moodprism_nodate}\cite{noauthor_moodily_nodate} \cite{noauthor_moodpanda_nodate}\cite{noauthor_daylio_nodate} \cite{noauthor_mood_nodate}\cite{noauthor_mood_nodate-1}\cite{fitbit_stress_nodate} \cite{appleinc_ios_nodate}\cite{hellocodeinc_exist_nodate}.
+Some health apps allow to correlate symptoms with food and behavior \cite{noauthor_pattern_nodate}\cite{noauthor_features_nodate}.
+There is increasing development in apps predicting activity of the sympathetic nervous system from heart rate and heart rate variability \cite{welltory_welltory_nodate}\cite{elitehrv_best_nodate} which claim to estimate stress, energy, and productivity levels\cite{welltory_welltory_nodate}, or if someone should exercise harder or teak a break\cite{elitehrv_best_nodate}.
+FitBit also shows a "Stress Management" score which is computed taking data about sleep, electro-dermal acticity and exercise into account\cite{fitbit_stress_nodate}.
+
+%=============================================================================
+
+\section{Data sources}
+The aim is to use non-intrusive, inexpensive sensors and services that are robust and easy to use over a few years. 
+Examples are, fitness tracker for exercise and sleep, indoor and outdoor weather stations, screentime logger, nutrition, weekday, medication.
+The reader can find a list of all data sources and explanations in the Appendix.
+%=============================================================================
+
+\section{Methods}
+\subsection{Pre-processing}
+These data types' sampling rates vary between 5 minutes (e.g., $heart-rate$) to ~ weekly ($Bodyweight$ and $VO2Max$).
+
+\subsubsection{Data Aggregation}
+The goal is to have a sampling rate of 24h.
+In most cases, the sampling rate is $>$24h, and the data is aggregated in 24h intervals by taking the sum, fifth percentile, 95th percentile, and median.
 We use the fifth and 95th percentile instead of the minimum and maximum since they are less noisy and more predictive.
 
-\section{Imputation}
-The sampling frequency of Bodyweight and VO2Max is usually <24h.
-Since Bodyweight and VO2Max represent physical entities that change relatively slowly, we assume a linear change, allowing linear interpolation to achieve the 24h frequency.
+\subsubsection{Data Impution}
+The sampling frequency of $Bodyweight$ and $VO2Max$ is usually $<$24h.
+Since $Bodyweight$ and $VO2Max$ represent physical entities that change relatively slowly, we assume a linear change, allowing linear interpolation to achieve the 24h frequency.
 
-\section{Data exploration}
-\color{red}
-TODO:\\
-- distributions, \\
-- outliers(sleep, energy burned), \\
-- limited sensor range( co2, noise)\\
-\color{black}
-
-The app computes the Pearson correlation coefficient and p-Values between all attributes. Since comparing each attribute with every other, we correct the p-values according to the Benjamini-Hochberg procedure to control the false discovery rate.
-A correlation is significant for p < 0.05.
-Users can visually explore the data via a plotted time series with a seven-day moving average and manually inspect the relationship between two variables through scatter plots.
-
-\section{Ensemble} 
-\color{red}
-TODO:\\
-skip the day, interpolation, average, skip variable, multiple datasets
-\color{black}
-
-\section{Time-series} 
+\subsubsection{Time-series} 
 \label{sec:time-series}
-
 Since the dataset is a time series, we added all yesterday's values as features, including yesterday's well-being.
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=1\linewidth]{partial_autocorrelation_025lags_Mood.png}
-\caption[Partial autocorrelation]{Partial autocorrelation of subjective well-being. The first datapoint, which represents the subjective well-being of one day ago, is considerable. The points representing the partial autocorrelation of 3 and 4 days ago are barely significant.}
+\includegraphics[width=1\linewidth]{figs/partial_autocorrelation_025lags_Mood.png}
+\caption[Partial autocorrelation]{Partial autocorrelation of subjective well-being. The first data point, which represents the subjective well-being of one day ago, is considerable. The points representing the partial autocorrelation of 3 and 4 days ago are barely significant.}
 \label{fig:partial_auto_corr}
 \end{center}
 \end{figure}
@@ -133,15 +163,93 @@ Since the dataset is a time series, we added all yesterday's values as features,
 
 Figure \ref{fig:partial_auto_corr} shows the partial autocorrelation of well-being. Note that the first value, which represents the well-being of one day ago, is considerable, while the partial autocorrelations of 2 to 4 days ago are barely significant.
 
-\section{Train-evaluation-test-split}
+\subsection{Data Exploration}
+Since the sensors and services which provide the data are cheap consumer devices, the data has many outliers.
+For example, the estimated metabolic energy output, shown in figure \ref{fig:kcal_out} has values at ~1000 kcal and above 4000 kcal which are probably outliers.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{figs/kcal_out.png}
+\caption{Distribution of the estimated metabolic energy output. Values below 1600 kcal and above 3500 kcal are outliers.}
+\label{fig:kcal_out}
+\end{center}
+\end{figure}
+
+Moreover, figure \ref{fig:co2} shows a suspicious $CO_2$ spike at 5000 pmm. A closer look into the raw sensor data depicted in figure \ref{fig:netatmo_co2} indicates an improbable saturation at 5000 pmm. The causal explanation is an ending sensor range at 5000 ppm, which falsely counts all values greater than 5000 to 5000 ppm.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{figs/CO2.png}
+\caption{Distribution of CO2 data. Note the frequent occurrence of 5000ppm as it is the sensor's maximum range.}
+\label{fig:co2}
+\end{center}
+\end{figure}
+
+% CO2 sensor raw data
+\begin{figure}
+\begin{tikzpicture}
+\begin{axis}[
+    title={CO2 Sensor data},
+    xlabel={Timestamp},
+    ylabel={CO2 in ppm},
+    xmin=0, xmax=206,
+    ymin=0, ymax=5500,
+    xtick={0,50,100,150,200},
+    ytick={0,1000,2000,3000,4000,5000},
+    legend pos=south west,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot[
+    color=blue,
+    mark=none,
+    ]
+    coordinates {
+    (0,1782)(1,1778)(2,1751)(3,1753)(4,1737)(5,1737)(6,1752)(7,1697)(8,1736)(9,1715)(10,1723)(11,1792)(12,1962)(13,2057)(14,2175)(15,2250)(16,2355)(17,2415)(18,2560)(19,2603)(20,2704)(21,2734)(22,2835)(23,2883)(24,2977)(25,3085)(26,3185)(27,3253)(28,3321)(29,3393)(30,3441)(31,3502)(32,3572)(33,3651)(34,3275)(35,3267)(36,3284)(37,3345)(38,3434)(39,3486)(40,3568)(41,3606)(42,3688)(43,3792)(44,3831)(45,3902)(46,3923)(47,3996)(48,4031)(49,4075)(50,4153)(51,4171)(52,4245)(53,4325)(54,4366)(55,4366)(56,4401)(57,4406)(58,4447)(59,4464)(60,4469)(61,4511)(62,4566)(63,4630)(64,4649)(65,4649)(66,4727)(67,4745)(68,4838)(69,4815)(70,4877)(71,4914)(72,4936)(73,4936)(74,5000)(75,5000)(76,5000)(77,5000)(78,5000)(79,5000)(80,5000)(81,5000)(82,5000)(83,5000)(84,5000)(85,4979)(86,4918)(87,5000)(88,5000)(89,5000)(90,5000)(91,5000)(92,5000)(93,5000)(94,5000)(95,5000)(96,5000)(97,5000)(98,5000)(99,5000)(100,5000)(101,5000)(102,5000)(103,5000)(104,5000)(105,5000)(106,5000)(107,5000)(108,5000)(109,5000)(110,5000)(111,5000)(112,5000)(113,5000)(114,5000)(115,5000)(116,5000)(117,5000)(118,5000)(119,5000)(120,5000)(121,5000)(122,5000)(123,5000)(124,5000)(125,5000)(126,5000)(127,5000)(128,5000)(129,5000)(130,5000)(131,5000)(132,5000)(133,5000)(134,5000)(135,5000)(136,5000)(137,5000)(138,5000)(139,5000)(140,5000)(141,5000)(142,5000)(143,5000)(144,5000)(145,5000)(146,5000)(147,5000)(148,5000)(149,5000)(150,5000)(151,5000)(152,5000)(153,5000)(154,5000)(155,5000)(156,5000)(157,5000)(158,5000)(159,5000)(160,5000)(161,5000)(162,5000)(163,4250)(164,3647)(165,3256)(166,3034)(167,2885)(168,2687)(169,2629)(170,2600)(171,2653)(172,2657)(173,2637)(174,2707)(175,2773)(176,2870)(177,2918)(178,3017)(179,3068)(180,3087)(181,3203)(182,3238)(183,3288)(184,3348)(185,3383)(186,3104)(187,2819)(188,2646)(189,2586)(190,2625)(191,2757)(192,2862)(193,2888)(194,2969)(195,3039)(196,3051)(197,3140)(198,3175)(199,3211)(200,3175)(201,2933)(202,2729)(203,2597)(204,2541)(205,2492)(206,2393)
+    };
+
+    
+\end{axis}
+\end{tikzpicture}
+    \caption{The true CO2 level is higher than 5000 ppm but the sensors maximum is 5000 ppm.}
+    \label{fig:netatmo_co2}
+\end{figure}
+
+The distribution of the wakeuptime looks gaussian except of one suspicious spice at 320 minutes after midnight. However, an alarm clock at 5:20am indicates plausibility of this spice.
+% sleep end
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{figs/SleepEnd.png}
+\caption{Wakeup time in minutes after midnight. Note the spike at 320, which is caused by the alarm clock}
+\label{fig:alarm}
+\end{center}
+\end{figure}
+
+Improbable values in the dataset are not corrected manually, as we don't have access to user data in the real mobile application due to privacy.
+Instead we exploit robust statistics by aggregating the data via the 5th and 95th percentile instead of the maxima. Our experiments have shown that these percentiles are more predicative than maxima.
+
+
+The app computes the Pearson correlation coefficient and p-Values between all attributes. Since comparing each attribute with every other, we correct the p-values according to the Benjamini-Hochberg procedure to control the false discovery rate.
+A correlation is significant for p < 0.05.
+Users can visually explore the data via a plotted time series with a seven-day moving average and manually inspect the relationship between two variables through scatter plots.
+
+
+\subsection{Training and Hyperparamters} 
+We predict well-being through multiple linear regression and a neural network. Both methods use normalized data, where each type has zero mean and unit variance.
+\color{red}
+TODO:\\
+skip the day, interpolation, average, skip variable, multiple datasets, ensemble
+\color{black}
+
+
+
+\subsection{Train-evaluation-test-split}
 Since there is a temporal dependency between observations, standard cross-validation, which assigns samples randomly to the train or test set, would lead to using some data from the future to forecast the past, which isn't possible in the real-life application. 
 
 We use time-series-splits to avoid this fallacy. However, as only the last split uses all training data, many splits are very inefficient w.r.t. data use. Hence, we create only one split. Essentially, this is a simple train test split, where the training set contains old data points, and the test split the most recent ones.
 
-
-
-\section{Prediction}
-We predict well-being through multiple linear regression and a neural network. Both methods use normalized data, where each type has zero mean and unit variance.
 
 
 \subsection{Multiple linear regression}
@@ -159,22 +267,30 @@ Specifically, $\lambda=0$ is the ridge regularization and $\lambda=1$ is the rid
 
 \subsubsection{Sample-weighting}
 We assume that the factors influencing a person's well-being change over time and use exponential sample-weight decay as shown in figure \ref{fig:sample-weight}.
-The formula is $max(14.7498 - 13.2869 * (i + 30) ** 0.0101585, 0)$ which is exponential decay fitted to a value of 1 for today's datapoint and reaches zero after ~82 years. After 82 years the sample weight stays at 0 due to $max(x,0)$.
+The formula is 
+\begin{equation}
+sample\_weight_i = max(14.7498-13.2869(i + 30)^{0.0101585},0)
+\end{equation}
+
+which is exponential decay fitted to a value of 1 for today's datapoint and reaches zero after ~82 years. After 82 years the sample weight stays at 0 due to $max(x,0)$.
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=1\linewidth]{RegressionSampleWeight.png}
-\caption[Sample weight]{Exponential sample-weight decay discounting older data as it might be less useful to predict today's mood.}
+\includegraphics[width=1\linewidth]{figs/RegressionSampleWeight.png}
+\caption[Sample weight]{Exponential sample-weight decay discounting older data as it might be less valuable to predict today's mood.}
 \label{fig:sample-weight}
 \end{center}
 \end{figure}
 
 
-\subsubsection{Test}
-Finally, we predict well-being via the data of a previously unseen test set and calculate the prediction intervals.
-
 \subsection{Neural Network}
 The neural network has one fully connected hidden layer with 16 neurons followed by a Rectified Linear Unit. AdamW is the optimizer, which minimizes the mean squared error loss with a learning rate of 10e-4 and a weight decay of one. 
 We searched for the best neural network architecture and hyper-parameters manually through cross-validation.
+
+
+\subsection{Evaluation}
+Finally, we predict well-being via the data of a previously unseen test set, record the mean squared error, and calculate the prediction intervals.
+
+%=============================================================================
 
 \section{Results}
 Of 198 variables, 77 correlate significantly with well-being (see table \ref{tab:features} in the \ref{sec:Appendix}). Although, many of them are highly co-correlated. The principal component analysis shows in figure \ref{fig:pca} that there are only 25 components that explain more than 1\% of the variance. Examples of co-correlated variables are
@@ -187,7 +303,7 @@ Of 198 variables, 77 correlate significantly with well-being (see table \ref{tab
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=1\linewidth]{pca_explained_variance_ratio.png}
+\includegraphics[width=1\linewidth]{figs/pca_explained_variance_ratio.png}
 \caption{The principal component analysis shows that there are only 25 components that explain more than 1\% of the variance, indicating highly dependent features.}
 \label{fig:pca}
 \end{center}
@@ -196,7 +312,7 @@ Of 198 variables, 77 correlate significantly with well-being (see table \ref{tab
 For prediction, we drop nutrition data, as there is only little available, reducing the number of variables to 184.
 
 \subsection{Multiple linear regression}
-Elastic-Net regularization with an L1-ration of $\lambda=1$ leads to the best prediction performance on our dataset. We interpret that feature shrinkage is more important for generalization than the reducing the L2 norm of the weights, due to the high correlation of features.
+Elastic-Net regularization with an L1-ration of $\lambda=1$ leads to the best prediction performance on our dataset. We interpret that feature shrinkage is more critical for generalization than reducing the L2 norm of the weights due to the high correlation of features.
 
 \begin{table}[]
 \caption[]{Regression weights. All other features have a weight of zero.}
@@ -222,39 +338,45 @@ The prediction interval is $\pm2.3$ on the scale from 1 to 9 and $\pm1.2$ on the
 \subsection{Neural Network}
 performance.
 
-\section{Explainability and Visualization}
+
+\subsection{Explainability and Visualization}
 screenshot correlation, scatter plot, p-value, \\
 correlation != causality: flipping axes\\
 time-series\\
 prediction, interval, waterfall chart \\
-WVC details\\
+Bar chart details\\
 triangle details\\
 A/B test\\
+%=============================================================================
 
-
-\section{Conclusion, future work, discussion, limitations}
+\section{Discussion}
 L0.5-norm regularization\\
 causal inference\\
 explainability vs. accuracy of prediction results\\
+
+\subsection{Limitations}
+
+
+\subsection{Future Work}
+ Multimodal Autoencoder: A Deep Learning Approach to Filling In Missing Sensor Data and Enabling Better Mood Prediction\cite{jaques_multimodal_2017}//
+ when forcasting the mood of the next day with an mean absolute error of 17.42 while the mood standard deviation is 17.14\cite{umematsu_forecasting_2020}
+
+\subsection{Conclusion}
+1. Recap what you did. In about one paragraph recap what your research question was and how you tackled it.
+2. Highlight the big accomplishments. Spend another paragraph explaining the highlights of your results. These are the main results you want the reader to remember after they put down the paper, so ignore any small details.
+3. Conclude. Finally, finish off with a sentence or two that wraps up your paper. I find this can often be the hardest part to write. You want the paper to feel finished after they read these. One way to do this, is to try and tie your research to the “real world.” Can you somehow relate how your research is important outside of academia? Or, if your results leave you with a big question, finish with that. Put it out there for the reader to think about to.
+
+
 \color{black}
-
-
-
-\section*{Acknowledgment}
-
-The preferred spelling of the word ``acknowledgment'' in America is without 
-an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B. 
-G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
-acknowledgments in the unnumbered footnote on the first page.
-
 
 %Backmatter
 %=============================================================================
 
 \bibliographystyle{IEEEtran}
-\bibliography{ref}
+\bibliography{refs}
 
 
+%=============================================================================
 
 \section{Appendix}
 \label{sec:Appendix}
@@ -312,7 +434,7 @@ Data sources are:
 \end{itemize}
 \item Later Upgrade to Fitbit Sense Smartwatch, which extends the following estimates:
    \begin{itemize}
-\item Responsiveness points: a proprietary estimate of how well the sympathetic and parasympathetic nervous system are in balance which takes Heart Rate Variability (HRV), Elevated Resting Heart Rate (RHR), Sleeping Heart Rate above RHR, and Electrodermal Activity (EDA) into account
+\item Responsiveness points: a proprietary assessment of how well the sympathetic and parasympathetic nervous system are in balance which takes Heart Rate Variability (HRV), Elevated Resting Heart Rate (RHR), Sleeping Heart Rate above RHR, and Electrodermal Activity (EDA) into account
 \item Exertion points (similar to heart points)
 \item the temperature of the wrist during sleep
 \item sleep points (sleep rating)
@@ -337,7 +459,7 @@ Data sources are:
 \item cholesterol intake
 \item total calories intake
 \end{itemize}
-\item Body weight (Renpho Scale) 
+\item Bodyweight (Renpho Scale) 
 \item Screentime tracking, with RescueTime
    \begin{itemize}
 \item total screen time
@@ -348,7 +470,7 @@ Data sources are:
 \end{itemize}
 
 \begin{table}[]
-\caption[]{Correlation coefficients, Benjamini–Hochberg corrected p-values and regression weights of all features. Sorted by p-values.}
+\caption[]{Correlation coefficients, Benjamini–Hochberg corrected p-values and regression weights of all features. Sorted by p-values, which are bold when below 0.5.}
 \label{tab:features}
 
 \begin{tabular}{llll}
