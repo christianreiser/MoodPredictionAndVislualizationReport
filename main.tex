@@ -9,13 +9,15 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{pgfplots}
+\usepackage{subfigure}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+    \pgfplotsset{compat=1.18}
 \begin{document}
 
-\title{Predicting and visualizing daily happiness of people using tracking data of consumer services and devices.\\
-\thanks{Identify applicable funding agency here. If none, delete this.}
+\title{Predicting and visualizing daily mood of people using tracking data of consumer services and devices.\\
+%\thanks{}
 }
 
 \author{
@@ -47,147 +49,157 @@ benedikt.ehinger@vis.uni-stuttgart.de}
 \maketitle
 
 \begin{abstract}
-We offer the code for this work in open source.
-\color{red}
-...\\
-...\\
-...
-\color{black}
+Users can easily export personal data from devices and services they use but struggle to gain valuable insights. To tackle this problem, we present the self-tracking meta app called \textit{InsightMe}, which aims to show users how data relate to their wellbeing, health, and performance. This paper focuses on mood, which is closely associated with wellbeing. In a one-person study, we show how a person's sleep, exercise, nutrition, weather, air quality, screentime, and work correlate to the average mood the person experiences during the day. Furthermore, the app predicts the mood via multiple linear regression and a neural network, achieving an explained variance of more than 50\%. 
 
+We strive for explainability and transparency by showing the users p-values of the correlations, drawing prediction intervals, and visually illustrating how the original data influence predictions. In addition, the code
+\footnote{Sourcecode app: https://github.com/christianreiser/insightme\\
+Sourcecode backend: https://github.com/christianreiser/correlate}
+and app
+\footnote{Playstore: https://play.google.com/store/apps/details?id=com.insightme\\
+Appstore: https://apps.apple.com/de/app/insightme/id1522480765}
+are available online.
 \end{abstract}
 
 \begin{IEEEkeywords}
-machine learning, visualization, subjective well-being, mobile, quantified-self
+machine learning, visualization, mood, mobile, quantified-self
 \end{IEEEkeywords}
 
 %=============================================================================
 \section{Introduction}
-We know that our environment and actions play a major role in our well-being, health, intellectual and athletic performance.
+We know that our environment and actions play a dominant role in our mood, health, intellectual and athletic performance.
 However, there is less certainty about how much our environment (e.g., weather, air quality, noise) or behavior (e.g., nutrition, exercise, meditation, sleep) influence our happiness, productivity, sports performance, or allergies.
-Furthermore, on some days, we are surprised that we are less motivated, our athletic performance is poor, or the disease symptoms are more severe.
+Furthermore, on some days, we are surprised that we are less motivated, our athletic performance is poor, or disease symptoms are more severe.
 
-To understand ourselves better, we built a system that predicts a variable of interest like well-being from past behavior and environmental data.
-The system explains the predictions by visualizing its reasoning. 
+This paper focuses on daily mood. Although negative moods have essential regulating functions like signaling the need for help or avoiding harmful behavior like going on buying sprees, taking risks, or making foolish investments \cite{noauthor_bipolar_nodate}, other studies show that a bad moods can also have unfavorable consequences like less resistance to temptations, especially to unhealthy food\cite{fedorikhin_positive_2010}, impaired learning capabilities,\cite{brand_how_2007} and inhibited creative thinking\cite{vosburg_effects_1998}.
 
-This paper focuses on daily subjective well-being and explores its associations with outdoor and indoor weather, sleep and exercise, body weight, nutrition, heart rate, screentime, and productivity.
+Our aspirational goal is to know which variables causally affect our mood to take beneficial actions. Unfortunately, causal inference is generally very complex. Hence, we started with a system that computes how past behavioral and environmental data correlate with mood and then use these features to predict the daily mood. 
+The system explains its predictions by visualizing its reasoning in two different ways. We created a small A/B study to test which visualization method enables users to interpret data faster and more accurately.
 
 
-\subsection{How is well-being defined?}
-Psychologists often refer to subjective well-being (SWB) as frequent positive affect, infrequent negative affect, and cognitive evaluations of what a person considers a good life \cite{tov_subjective_2013}.
+%\subsection{How is mood defined?}
+% Psychologists often refer to mood as frequent positive affect, infrequent negative affect, and cognitive evaluations of what a person considers a good life \cite{tov_subjective_2013}.
 
-such as being enthusiastic, energetic, confident, active, and alert, optimistic, happy, joyful, curious, excited, relaxed, grateful
-such as being sad, lethargic, distressed, in pain, anxious, sick, pessimistic, angry
-In their review of literature on affect Barsade and Gibson (2012) define positive affectivity as the tendency of individuals to be cheerful and to experience positive moods, such as pleasure or well-being across a variety of situations, as compared to individuals who tend to be low energy and melancholy.
+% such as being enthusiastic, energetic, confident, active, and alert, optimistic, happy, joyful, curious, excited, relaxed, grateful
+% such as being sad, lethargic, distressed, in pain, anxious, sick, pessimistic, angry
+% In their review of literature on affect Barsade and Gibson (2012) define positive affectivity as the tendency of individuals to be cheerful and to experience positive moods, such as pleasure or wellbeing across a variety of situations, compared to individuals who tend to be low energy and melancholy.
 
-This study aims to test the predictive power of behavioral and sensor-based variables such as heart rate, weather, and sleep regarding subjective well-being.
-To gather well-being data, we built a mobile app that asks the user to rate the days' average subjective well-being at the end of the day. 
 
-\subsection{How is well-being measured?}
-Rating in the evening before sleep:
-Taking all together, how satisfied or dissatisfied were you today on a scale from one to nine?
 
-This rating mechanism has downsides due to recency bias, leading to the greater importance of recent events and fading affect bias, where negative memories fade faster than positive ones (Skowronski, Walker, et al., 2014).
-Asking for a rating multiple times per day would reduce these biases; however, we decided against it, as it requires more effort and thus is less sustainable over long periods. 
+We built an app that allows for extensive manual tracking of variables.
+However, the data of this study come from inexpensive consumer devices and services which are passive and thus require minimal cost and effort to use.
+The only manual input is the average mood at the end of each day. 
+
+
+
 
 
 
 %=============================================================================
 
 \section{Related Work}
-This section provides an overview of relevant work, with a focus on (\ref{sec:wellbeing}) well-being prediction and (\ref{sec:apps}) related mobile applications.
+This section provides an overview of relevant work, focusing on mood prediction (\ref{sec:wellbeing}) and related mobile applications (\ref{sec:apps}).
 
-\subsection{Prediction of well-being}
+\subsection{Prediction of mood}
 \label{sec:wellbeing}
 
-In the last decade, affective computing stated to explore predicting mood, wellbeing, happiness and emotion from sensor data gathered through a varierty of sources.
+In the last decade, affective computing explored predicting mood, wellbeing, happiness, and emotion from sensor data gathered through various sources.
 
-An unimodal heartbeat time series, measured with a professional EGC device has been shown to predict emotional valence, when the participant is seated. \cite{harper_bayesian_2020}\\
+A publication explains how a unimodal heartbeat time series, measured with a professional EGC device, can predict emotional valence when the participant is seated\cite{harper_bayesian_2020}. 
 
+Major depressive disorder can be detected with an average accuracy of \char`~ 70\% from social media behavior, in a study of Twitter users who posted more than 4500 tweets on average\cite{choudhury_predicting_2013}.
 
-Major depressive disorder can be detected with an average accuracy of ~70\% from twitter behavior, in a study of twitter users, who posted more than 4500 tweets on average\cite{choudhury_predicting_2013}.\\ 
-
-Several studies estimated mood, stress and health with data from multimodal wearable sensors, a smartphone app, and daily manually reported behaviors such as academic activities, exercise claiming maximum accuracies of mood of
+Several studies estimated mood, stress, and health with data from multimodal wearable sensors, a smartphone app, and daily manually reported behaviors such as academic activities and exercise, claiming maximum accuracies of
  68.48\%\cite{jaques_predicting_2015},
  74.3\%\cite{jaques_multi-task_2015},
- 82.52\%\cite{jaques_multi-task_2016} all with a baseline of  53.94. Another study achieves 78.7\% with a baseline of 50.4\%\cite{taylor_personalized_2020}. 
+ 82.52\%\cite{jaques_multi-task_2016}, all with a baseline of 53.94. Another study scores 78.7\%, with a baseline of 50.4\%\cite{taylor_personalized_2020}. 
  
 
-The above mentioned studies might be less practical for long term every day usage as expensive professional equipment, time consuming manual reporting of activity duration or frequent social media behavior is needed.
+All the studies mentioned above might be less practical for non-professional users committed to long-term everyday usage because expensive professional equipment, time-consuming manual reporting of activity durations, or frequent social media behavior is needed.
 
-Therefore, we focus on cheap and passive data-sources, requiring minimal attention in everyday life.
+Therefore, we focus on cheap and passive data sources, requiring minimal attention in everyday life.
 
-It has been shown that mood can be predicted from passive data, specifically keyboard and application data from mobile phones with a maximum accuracy of 66.59\% (62.65\% if without text) compared to a baseline of 40.18\% \cite{liu_multimodal_2020}\\
+One study meeting these criteria shows that mood can be predicted from passive data, specifically, keyboard and application data of mobile phones with a maximum accuracy of 66.59\% (62.65\% if without text) compared to a baseline of 40.18\% \cite{liu_multimodal_2020}.\\
 
 
 \subsection{Related Apps}
 \label{sec:apps}
 
-There are several apps which allow users to track their mood  \cite{noauthor_moodprism_nodate}\cite{noauthor_moodily_nodate} \cite{noauthor_moodpanda_nodate}\cite{noauthor_daylio_nodate} \cite{noauthor_mood_nodate}\cite{noauthor_mood_nodate-1}\cite{fitbit_stress_nodate} \cite{appleinc_ios_nodate}\cite{hellocodeinc_exist_nodate}.
-Some health apps allow to correlate symptoms with food and behavior \cite{noauthor_pattern_nodate}\cite{noauthor_features_nodate}.
-There is increasing development in apps predicting activity of the sympathetic nervous system from heart rate and heart rate variability \cite{welltory_welltory_nodate}\cite{elitehrv_best_nodate} which claim to estimate stress, energy, and productivity levels\cite{welltory_welltory_nodate}, or if someone should exercise harder or teak a break\cite{elitehrv_best_nodate}.
-FitBit also shows a "Stress Management" score which is computed taking data about sleep, electro-dermal acticity and exercise into account\cite{fitbit_stress_nodate}.
+Several apps allow users to track their moods  \cite{noauthor_moodprism_nodate}\cite{noauthor_moodily_nodate} \cite{noauthor_moodpanda_nodate}\cite{noauthor_daylio_nodate} \cite{noauthor_mood_nodate}\cite{noauthor_mood_nodate-1}\cite{fitbit_stress_nodate} \cite{appleinc_ios_nodate}\cite{hellocodeinc_exist_nodate}.
+Some health apps allow correlating symptoms with food and behavior \cite{noauthor_pattern_nodate}\cite{noauthor_features_nodate}.
+Moreover, there is increasing development in apps predicting activity of the sympathetic nervous system from heart rate and heart rate variability \cite{welltory_welltory_nodate}\cite{elitehrv_best_nodate} which claim to estimate stress, energy, and productivity levels\cite{welltory_welltory_nodate}, or if someone should exercise harder or teak a break\cite{elitehrv_best_nodate}.
+Further, FitBit computes a "Stress Management" score taking data about sleep, electro-dermal activity, and exercise into account\cite{fitbit_stress_nodate}.
 
 %=============================================================================
 
 \section{Data sources}
-The aim is to use non-intrusive, inexpensive sensors and services that are robust and easy to use over a few years. 
-Examples are, fitness tracker for exercise and sleep, indoor and outdoor weather stations, screentime logger, nutrition, weekday, medication.
-The reader can find a list of all data sources and explanations in the Appendix.
+The aim is to use non-intrusive, inexpensive sensors and services that are robust and easy to use for a few years.
+For this study, we tracked one person with a smartwatch, weather stations, screentime logger, external variables like moon illumination, season, or workday, manual tracking of mood, and more.
+The reader can find a list of all data sources and explanations in the appendix (section \ref{sec:Appendix}).
 %=============================================================================
 
 \section{Methods}
 \subsection{Pre-processing}
-These data types' sampling rates vary between 5 minutes (e.g., $heart-rate$) to ~ weekly ($Bodyweight$ and $VO2Max$).
+The sampling rates of the raw data typically vary between five minutes (e.g., heart rate) to  about weekly (e.g., Bodyweight and $VO_2Max$).
 
 \subsubsection{Data Aggregation}
 The goal is to have a sampling rate of 24h.
-In most cases, the sampling rate is $>$24h, and the data is aggregated in 24h intervals by taking the sum, fifth percentile, 95th percentile, and median.
-We use the fifth and 95th percentile instead of the minimum and maximum since they are less noisy and more predictive.
+In most cases, the sampling rate is greater than 24h, and we aggregate it to daily intervals by taking the sum, fifth percentile, 95th percentile, and median.
+We use these percentiles instead of the minimum and maximum since they are less noisy, and found them more predictive.
 
-\subsubsection{Data Impution}
-The sampling frequency of $Bodyweight$ and $VO2Max$ is usually $<$24h.
-Since $Bodyweight$ and $VO2Max$ represent physical entities that change relatively slowly, we assume a linear change, allowing linear interpolation to achieve the 24h frequency.
+\subsubsection{Data Imputation}
+The sampling frequency of Bodyweight and $VO_2Max$ is usually $<$24h.
+Since Bodyweight and $VO_2Max$ represent physical entities that change relatively slowly, we assume a linear change, allowing linear interpolation to obtain the 24h frequency.
+If there are days or features where many values are missing, we drop these days or features, respectively.
+Otherwise, data imputation fills missing values with the feature's average.
 
 \subsubsection{Time-series} 
 \label{sec:time-series}
-Since the dataset is a time series, we added all yesterday's values as features, including yesterday's well-being.
+As the dataset is a time series, and yesterday's features could also affect today's mood, we added all of yesterday's features to the set of today's predictors.
+We also include the mood of the last days until there is no new significant information about autocorrelation, given the mood of the previous days.
+As shown in figure \ref{fig:partial_auto_corr}, computing the partial autocorrelation\cite{durre_robust_2015} determines these days, when including all days from the left until the first insignificant day.
+In our case, this means the values of one to four days ago.
+
+
+\subsubsection{Standardization}
+Standardization rescales the features to have a mean of 0 and unit variance.
+
 
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=1\linewidth]{figs/partial_autocorrelation_025lags_Mood.png}
-\caption[Partial autocorrelation]{Partial autocorrelation of subjective well-being. The first data point, which represents the subjective well-being of one day ago, is considerable. The points representing the partial autocorrelation of 3 and 4 days ago are barely significant.}
+\caption[]{Partial autocorrelation of mood, where the first four data points are significant. We include these in the set of predictors.}
 \label{fig:partial_auto_corr}
 \end{center}
 \end{figure}
 
 
-Figure \ref{fig:partial_auto_corr} shows the partial autocorrelation of well-being. Note that the first value, which represents the well-being of one day ago, is considerable, while the partial autocorrelations of 2 to 4 days ago are barely significant.
+
 
 \subsection{Data Exploration}
 Since the sensors and services which provide the data are cheap consumer devices, the data has many outliers.
-For example, the estimated metabolic energy output, shown in figure \ref{fig:kcal_out} has values at ~1000 kcal and above 4000 kcal which are probably outliers.
+For example, the estimated metabolic energy output, shown in figure \ref{fig:kcal_out} has values at about 1000 kcal and above 4000 kcal.
 
 
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=1\linewidth]{figs/kcal_out.png}
-\caption{Distribution of the estimated metabolic energy output. Values below 1600 kcal and above 3500 kcal are outliers.}
+\caption{A distribution of the estimated metabolic energy output. Values below 1600 kcal and above 3500 kcal are outliers.}
 \label{fig:kcal_out}
 \end{center}
 \end{figure}
 
-Moreover, figure \ref{fig:co2} shows a suspicious $CO_2$ spike at 5000 pmm. A closer look into the raw sensor data depicted in figure \ref{fig:netatmo_co2} indicates an improbable saturation at 5000 pmm. The causal explanation is an ending sensor range at 5000 ppm, which falsely counts all values greater than 5000 to 5000 ppm.
+Moreover, figure \ref{fig:co2} shows a suspicious $CO_2$ spike at 5000 ppm. A closer look into the raw sensor data depicted in figure \ref{fig:netatmo_co2} indicates an improbable plateau at 5000 ppm. The causal explanation is an ending sensor range at 5000 ppm, which falsely counts all values greater than 5000 to 5000 ppm.
 
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=1\linewidth]{figs/CO2.png}
-\caption{Distribution of CO2 data. Note the frequent occurrence of 5000ppm as it is the sensor's maximum range.}
+\caption{Distribution of $CO_2$ data. Note the frequent occurrence of 5000ppm as it is the sensor's maximum range.}
 \label{fig:co2}
 \end{center}
 \end{figure}
 
 % CO2 sensor raw data
-\begin{figure}
+\begin{figure}[htbp]
 \begin{tikzpicture}
 \begin{axis}[
     title={CO2 Sensor data},
@@ -213,106 +225,82 @@ Moreover, figure \ref{fig:co2} shows a suspicious $CO_2$ spike at 5000 pmm. A cl
     
 \end{axis}
 \end{tikzpicture}
-    \caption{The true CO2 level is higher than 5000 ppm but the sensors maximum is 5000 ppm.}
+    \caption{The actual CO2 level is higher than 5000 ppm, but the sensor's maximum is 5000 ppm.}
     \label{fig:netatmo_co2}
 \end{figure}
 
-The distribution of the wakeuptime looks gaussian except of one suspicious spice at 320 minutes after midnight. However, an alarm clock at 5:20am indicates plausibility of this spice.
+The distribution of the wakeup time looks gaussian except for one suspicious spike at 320 minutes after midnight. However, an alarm clock at 5:20 am indicates the plausibility of this spike.
 % sleep end
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=1\linewidth]{figs/SleepEnd.png}
-\caption{Wakeup time in minutes after midnight. Note the spike at 320, which is caused by the alarm clock}
+\caption{Wakeup time in minutes after midnight. Note the spike at 320, which is caused by the alarm clock}.
 \label{fig:alarm}
 \end{center}
 \end{figure}
 
-Improbable values in the dataset are not corrected manually, as we don't have access to user data in the real mobile application due to privacy.
-Instead we exploit robust statistics by aggregating the data via the 5th and 95th percentile instead of the maxima. Our experiments have shown that these percentiles are more predicative than maxima.
+Improbable values in the dataset are not corrected manually, as we do not have access to user data in the actual mobile application due to our strict privacy policy.
+Instead, we exploit robust statistics by aggregating the data via the 5th and 95th percentile instead of the maxima. Our experiments have shown that these percentiles are more predictive than the maxima.
 
 
-The app computes the Pearson correlation coefficient and p-Values between all attributes. Since comparing each attribute with every other, we correct the p-values according to the Benjamini-Hochberg procedure to control the false discovery rate.
-A correlation is significant for p < 0.05.
+The app computes the Pearson correlation coefficient and p-values between all attributes. Since comparing each attribute with every other, we correct the p-values according to the Benjamini-Hochberg procedure\cite{benjamini_controlling_1995} to control the false discovery rate due to multiple testing.
+We declare a result as significant for p $<$ 0.05.
 Users can visually explore the data via a plotted time series with a seven-day moving average and manually inspect the relationship between two variables through scatter plots.
 
 
-\subsection{Training and Hyperparamters} 
-We predict well-being through multiple linear regression and a neural network. Both methods use normalized data, where each type has zero mean and unit variance.
-\color{red}
-TODO:\\
-skip the day, interpolation, average, skip variable, multiple datasets, ensemble
-\color{black}
-
-
-
-\subsection{Train-evaluation-test-split}
-Since there is a temporal dependency between observations, standard cross-validation, which assigns samples randomly to the train or test set, would lead to using some data from the future to forecast the past, which isn't possible in the real-life application. 
-
-We use time-series-splits to avoid this fallacy. However, as only the last split uses all training data, many splits are very inefficient w.r.t. data use. Hence, we create only one split. Essentially, this is a simple train test split, where the training set contains old data points, and the test split the most recent ones.
+\subsection{Train-test-split}
+Since there is a temporal dependency between observations, standard cross-validation, which assigns samples randomly to the train or test set, would lead to using some data from the future to forecast the past, which is not possible in the real-life application. 
+We use time-series-splits to avoid this fallacy. However, as only the last split uses all training data, many splits are very inefficient w.r.t. data use. Ultimately, we create only one split, which is a simple train test split, where the training set contains old data points, and the test split the most recent ones.
 
 
 
 \subsection{Multiple linear regression}
-The estimation parameters for multiple linear regression (MLR) are computed via the train set while applying elastic-net regularization and sample-weighting.
+The estimation parameters for multiple linear regression are computed via the training dataset while applying elastic-net regularization and sample-weighting.
 
 
 \subsubsection{Regularization}
-We use a combined L1 and L2 weight penalty called elastic net regularization with the formula 
+We use a combined $L_1$ and $L_2$ weight penalty called elastic net regularization\cite{zou_regularization_2005} with
 \begin{equation}
-\hat{\beta} \equiv \underset{\beta}{\operatorname{argmin}}\left(\|y-X \beta\|^{2}+\lambda\|\beta\|_{1}+(1-\lambda)\|\beta\|^{2}\right),
+\min _{w} \frac{1}{2 n_{\text {samples }}}\|X w-y\|_{2}^{2}+\alpha \rho\|w\|_{1}+\frac{\alpha(1-\rho)}{2}\|w\|_{2}^{2}
 \end{equation}
-with the L1 ratio $\lambda$.
-Specifically, $\lambda=0$ is the ridge regularization and $\lambda=1$ is the ridge lasso regularization. We search for the optimal $\lambda$ via cross-validation.
+being the objective function to minimize, where $\rho$ is the $L_1$ ratio, $\alpha$ the strength of the penalty terms, $w$ the weights, $X$ the features, and $y$ the predictions.
+Specific cases are for $\rho=0$, which simplifies to ridge regularization and $\rho=1$ to lasso regularization. We search for the optimal $\rho$ and $\alpha$ via cross-validation.
 
 
 \subsubsection{Sample-weighting}
-We assume that the factors influencing a person's well-being change over time and use exponential sample-weight decay as shown in figure \ref{fig:sample-weight}.
+We assume that the factors influencing a person's mood change over time. To account for it, we use exponential sample-weight decay, as shown in figure \ref{fig:sample-weight}. 
 The formula is 
 \begin{equation}
-sample\_weight_i = max(14.7498-13.2869(i + 30)^{0.0101585},0)
+sample\_weight_i = max(14.7498-13.2869(i + 30)^{0.0101585},0),
 \end{equation}
-
-which is exponential decay fitted to a value of 1 for today's datapoint and reaches zero after ~82 years. After 82 years the sample weight stays at 0 due to $max(x,0)$.
+which is exponential decay fitted to a value of 1 for today's datapoint and reaches zero after about 82 years. $max(x,0)$ ensures that the sample weight never becomes a negative value. 
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=1\linewidth]{figs/RegressionSampleWeight.png}
-\caption[Sample weight]{Exponential sample-weight decay discounting older data as it might be less valuable to predict today's mood.}
+\caption[Sample weight]{Exponential sample-weight decay discounting older data as they might be less valuable to predict today's mood.}
 \label{fig:sample-weight}
 \end{center}
 \end{figure}
 
 
 \subsection{Neural Network}
-The neural network has one fully connected hidden layer with 16 neurons followed by a Rectified Linear Unit. AdamW is the optimizer, which minimizes the mean squared error loss with a learning rate of 10e-4 and a weight decay of one. 
+The neural network has two fully connected hidden layers, each with a leaky rectified linear unit\cite{xu_empirical_2015} as an activation function. The first and second hidden layers have 16 and 8 neurons, respectively. Since we want to regress on a scalar, the output layer has one unit. AdamW\cite{loshchilov_decoupled_2019} is the optimizer, minimizing the mean squared error for 4125 epochs with a learning rate of $10^{-4}$ and a weight decay of one. The number of epochs is determined by early stopping using cross-validation\cite{prechelt_automatic_1998}.
 We searched for the best neural network architecture and hyper-parameters manually through cross-validation.
 
 
-\subsection{Evaluation}
-Finally, we predict well-being via the data of a previously unseen test set, record the mean squared error, and calculate the prediction intervals.
+%\subsection{Evaluation}
+%Finally, we predict mood via the data of a previously unseen test set, record the mean squared error, and calculate the prediction intervals.
+
+
 
 %=============================================================================
 
 \section{Results}
-Of 198 variables, 77 correlate significantly with well-being (see table \ref{tab:features} in the \ref{sec:Appendix}). Although, many of them are highly co-correlated. The principal component analysis shows in figure \ref{fig:pca} that there are only 25 components that explain more than 1\% of the variance. Examples of co-correlated variables are
-\begin{itemize}
-    \item all the fourfold aggregated variables (i.e., mean, median, fifth-, and 95th percentile)
-    \item weather indoor and outdoor
-    \item time in bed and time asleep
-    \item walking minutes, heart points, exertion points
-\end{itemize}
+Of 198 variables, 77 correlate significantly with mood. All correlation coefficients are in table \ref{tab:features} in the appendix. 
 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=1\linewidth]{figs/pca_explained_variance_ratio.png}
-\caption{The principal component analysis shows that there are only 25 components that explain more than 1\% of the variance, indicating highly dependent features.}
-\label{fig:pca}
-\end{center}
-\end{figure}
-
-For prediction, we drop nutrition data, as there is only little available, reducing the number of variables to 184.
 
 \subsection{Multiple linear regression}
-Elastic-Net regularization with an L1-ration of $\lambda=1$ leads to the best prediction performance on our dataset. We interpret that feature shrinkage is more critical for generalization than reducing the L2 norm of the weights due to the high correlation of features.
+Elastic-Net regularization with a penalty strength $\alpha=0.12$ and $L_1$-ratio $\rho=1$ leads to the best prediction performance on our dataset.
 
 \begin{table}[]
 \caption[]{Regression weights. All other features have a weight of zero.}
@@ -331,43 +319,195 @@ DistractingScreentime  & -0.009
 \label{tab:reg}
 \end{table}
 
-Table \ref{tab:reg} shows all regression weights. Note that lasso regularization selected only nine features to predict well-being. 
-The prediction interval is $\pm2.3$ on the scale from 1 to 9 and $\pm1.2$ on the normalized scale with unit variance. 
-\color{red}
+Table \ref{tab:reg} shows all regression weights $w$ for $w\neq0$. Note that lasso regularization selected only nine features to predict the mood. 
+The prediction interval is $\pm2.3$ on the original scale from 1 to 9 and $\pm1.2$ on the standardized scale with unit variance.
+The average mean squared error on the standardized test set is 0.45, meaning 55\% of the original variance can be explained.
+\color{red}Question: is my assumption correct, that explained variance = 1-standardized MSE?\color{black}\\
+The effect of sample weighting is negligible.
 
 \subsection{Neural Network}
-performance.
+The average mean squared error is 0.50 on the standardized test set.
 
 
-\subsection{Explainability and Visualization}
-screenshot correlation, scatter plot, p-value, \\
-correlation != causality: flipping axes\\
-time-series\\
-prediction, interval, waterfall chart \\
-Bar chart details\\
-triangle details\\
-A/B test\\
+\subsection{Explainability, Visualization, and A/B Test}
+\label{sec:explain}
+% time series and scatter plot
+\begin{figure}[htbp]
+    \centering
+    \subfigure[Users can explore data via time-series with a seven-day moving average trend-line]{
+    \includegraphics[width=0.46\linewidth]{figs/timeline.png}
+    }
+         \subfigure[A scatter plot with linear regression and Pearson correlation coefficient to visualize how variables relate to each other.]{
+   \includegraphics[width=0.46\linewidth]{figs/scatterplot.png}
+}
+    \label{fig:plot}
+\end{figure}
+
+Screenshot (a) of figure \ref{fig:plot} shows how the app visualizes each feature via time series to allow the user to spot changes over time and trends through a seven-day moving average.
+Screenshot (b) of figure \ref{fig:plot} shows an example of a scatter plot enabling exploration of how variables visually relate to each other. In addition, it draws a linear regression line and indicates the degree of the linear relationship by visualizing the correlation coefficient in a bar.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\linewidth]{figs/waterfall.png}
+    \label{fig:waterfall}
+    \caption{Mood prediction: Each row represents the contribution of a feature that was selected by $L_1$ regularization. The row contains a red or green bar if the contribution is negative or positive, and the size of the bar indicates the magnitude of the contribution.
+    The black box with whiskers is the mood estimate with its 95\% confidence interval. 
+}
+\end{figure}
+Screenshot \ref{fig:waterfall} shows a black box with whiskers on a scale, which is the mood estimate with the 95\% confidence interval. This provides the user not only the prediction but also how much he can rely on the accuracy.
+Above the prediction in screenshot \ref{fig:waterfall}, we explain to the user how multiple linear regression calculates the predictions. Each row represents the contribution of the selected features. The row contains a red or green bar if the contribution is negative or positive, respectively, and the size indicates the magnitude of the contribution. The final mood prediction is simply the sum of all contributions.
+
+\begin{figure}[htbp]
+    \centering
+    \subfigure[]{
+       \includegraphics[width=0.47\linewidth]{figs/barchart.png}}
+         \subfigure[]{
+   \includegraphics[width=0.47\linewidth]{figs/triangle.png}}
+    \label{fig:explain}
+    
+    \caption{Two methods explain how multiple linear regression computes the contribution of a single feature on the final prediction. We call the method (a) "bar chart" as it contains a chart with three bars and (b) triangle chart, as it contains a red or green triangle inside of a scatter plot.}
+\end{figure}
+
+To understand more about the contribution of a feature, the user can tab on one and see either a bar chart or a regression triangle drawn onto the scatter plot.
+
+The bar chart shows that the contribution (green or red bar) of a feature is the product of the weight of the feature (deep teal) and the difference from today's value to its average value (light teal). 
+
+The triangle drawn onto the scatter plot shows the same information but with more context. 
+The triangle's horizontal line represents the difference between the average and today's value of the feature. The triangle's slope represents the feature's weight, which is a regularized regression line of the two variables. Finally, the vertical length between both lines depicts the contribution.\\
+
+The bar and triangle chart contain redundant information. Therefore, we conducted a small A/B test with 10 participants to determine which chart conveys the information more accurately and faster. 
+
+Seven of the participants are male, and three are female. The age ranges from 19 to 32, and all of them have an engineering background. 
+The participators answered four single choice questions concerning the bar chart (A) and four similar but not identical questions about the triangle chart (B). We assured proper testing by passively observing them. Each participant answers both part A and part B; however, 50\% of the participants first answer part A and verse visa to control for the order. We measured the accuracy and time required to answer the questions of each part and reported their average w.r.t. the number of participants and number of questions in table \ref{tab:study}. The table shows without significance that the bar chart is slightly favored to the triangle chart.
+Users also commented that they favor the bar chart as the length of the bar representing the weight is more accessible than the slope of the triangle, especially if the slope or triangle is small.
+
+
+\begin{table}[]
+\begin{tabular}{lll}
+\textbf{}             & bar chart & triangle chart \\
+average accuracy      & 0.9       & 0.85           \\
+average required time & 43 sec    & 45 sec        
+\end{tabular}
+    \caption{Average required time and accuracy of single choice questions about the bar and triangle chart. The required time is relatively long as it includes the time to read the question.}
+    \label{tab:study}
+\end{table}
+
+
 %=============================================================================
 
 \section{Discussion}
-L0.5-norm regularization\\
-causal inference\\
-explainability vs. accuracy of prediction results\\
+
+\subsubsection{Multicollinearity}
+Although 77 variables correlate significantly, there is multicollinearity. The principal component analysis shows in figure \ref{fig:pca} that only 25 components explain more than 1\% of the total variance. Examples of correlated predictors are
+\begin{itemize}
+    \item all the fourfold aggregated variables (i.e., the mean, median, fifth-, and 95th percentile of a variable)
+    \item weather indoor and outdoor
+    \item time in bed and time asleep
+    \item walking minutes, heart points, exertion points
+\end{itemize}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{figs/pca_explained_variance_ratio.png}
+\caption{The principal component analysis shows that there are only 25 components that explain more than 1\% of the variance, indicating highly dependent features.}
+\label{fig:pca}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Multiple linear regression versus neural network}
+Multiple linear regression performed better on the test set than the neural network. Neural networks can have an advantage over linear multiple linear regression as they can approximate nonlinear relationships. Still, the downside is the need for more training data to optimize additional parameters. In our case, the training set is probably too small, leading to overfitting and difficulty generalizing to new data. We expect the neural network will increase performance with a growing dataset.
+Besides, an enhanced architecture and improved hyperparameters could lead to better predictions of the neural network.
+An advantage of multiple linear regression is good explainability, as illustrated in section\ref{sec:explain}, which is less intuitive for neural networks \cite{samek_explainable_2017}.
+
+
+
 
 \subsection{Limitations}
 
+\subsubsection{Large unexplained variance}
+Predictions of multiple regression leave almost half the original variance unexplained. 
+Factors limiting performance are:
+\begin{itemize}
+    \item unmeasured variables which influence a person's mood
+    \item sensor data can be noisy, data imputation of missing values non-optimal
+    \item multiple linear regression assumes a linear relationship between features and mood and neglects nonlinear mechanisms
+    \item the training set might be too small, especially for the neural network
+\end{itemize}
+
+
+% nonlinear mood scale
+\subsubsection{Assumed linear mood scale}
+Our method of asking the users' mood on an absolute scale from 1 to 9 assumes a linear relationship of these values. However, the genuine relationship might not be linear because there may be a higher degree of change on a comparative scale than on an absolute scale for extreme values\cite{carlsson_assessment_1983}.
+Comparative surveys would reduce these biases. However, we decided against them as they require more of the user's time.
+
+
+\subsubsection{Recency and fading affect bias}
+Asking the user's average mood at the end of the day suffers from a potential recency bias\cite{cushing_barry_e_mitigation_1996}, where recent events of the evening have a stronger effect than more distant events in the morning. Furthermore, it is prone to the fading affect bias, where negative memories fade faster than positive ones\cite{skowronski_chapter_2014}.
+Asking for a rating multiple times per day would reduce these biases; however, we decided against it, as it requires more effort and thus is less sustainable over long periods.  
+
+
+\subsubsection{Survey}
+The results of the survey are not conclusive because of the small number of participants. Furthermore, the selection of participants might not represent the actual distribution of the users, w.r.t. age, gender, and background.
+
+
+\subsubsection{Causal inference}
+Features correlating strongly with mood and predictors of multiple regression could potentially causally affect mood. While this could be the case and interesting to know, correlation does not imply causation, and good predictors are not necessarily causes.
+For example, the positive correlation between mood and exercise could be caused by exercise causing better mood, or that good mood leads s.o. to exercises more. Furthermore, both could affect each other, or there could be a confounder like good weather, which causes s.o. to exercise more and improve mood independently of each other.
+In some instances, we can remove directions from a causal graph.
+E.g., when there is a positive correlation between the variable weekend and good mood, it is unlikely that the good mood causes the day to be a weekend. Unfortunately, this study does not allow for causal inference. Today, randomized controlled trials are still the gold standard for establishing causal conclusions\cite{hariton_randomised_2018}. 
+
+
 
 \subsection{Future Work}
- Multimodal Autoencoder: A Deep Learning Approach to Filling In Missing Sensor Data and Enabling Better Mood Prediction\cite{jaques_multimodal_2017}//
- when forcasting the mood of the next day with an mean absolute error of 17.42 while the mood standard deviation is 17.14\cite{umematsu_forecasting_2020}
+
+\subsubsection{Stronger feature selection and weaker weight penalty}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{figs/example.png}
+\caption{Sample predictions: Predictions are in red, ground truth values in green. The blue bar represents the 95\% prediction interval. It seems that the predictions go in the right direction but are too close to the mean at 6.2.}
+\label{fig:prediction-results}
+\end{center}
+\end{figure}
+Figure \ref{fig:prediction-results}, shows sample predictions. It seems that predictions tend to go in the right direction but are too close to the mean at 6.2. We hypothesize that the weight penalty is too strong, which pushes predictions to the mean, but feature selection is critical because the overall regularization strength $\alpha \neq0$.
+Further evidence is elastic's-net optimal $L_1$-ratio of $\rho=1$, meaning that performance is best with the lowest allowed weight penalty while maximizing feature selection. 
+
+Fortunately, the equation of elastic-net regularization, which operates between the $L_1$ and $L_2$-norm, can be generalized to the $L_p$-norm
+\begin{equation}
+\|x\|_{p}=\left(\sum_{i=1}^{n}\left|x_{i}\right|^{p}\right)^{1 / p},
+\end{equation}
+with $0<p<\infty$, allowing an even more extreme feature-selection to weight penalty ratio.
+Figure \ref{fig:reg} shows how feature selection becomes stronger and the penalty for large parameters weaker as p gets closer to zero. Future work could explore if prediction performance improves for $p<1$ like applying a regularization with the $L_{0.5}$-norm. However, this has the downside of leaving convex optimization\cite{xu_l12_2012}.
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{figs/Regularization_ Different P-Norms.png}
+\caption{Visualization of regularization with the $L_p$-norm. For $p\to 0$, the penalty is proportional to the number of non-zero parameters. For $p\to \infty$, the penalty has the size of the largest parameter. Elastic-Net regularization works only for $1 \leq p  \leq2$. Figure cropped and reprinted from \cite{binz_kevin_intro_2019}.}
+\label{fig:reg}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Improved data imputation}
+ A common problem in long-term studies is that sensor data is missing. While we impute missing values with the average or linear interpolation, we plan to impute with a deep multimodal autoencoder to enable better mood prediction\cite{jaques_multimodal_2017}.
+ 
+ 
+ \subsubsection{Forecasting tomorrow's mood}
+This study explored predicting the mood of the same day, but we also plan to forecast tomorrow's mood. A study shows it is possible with a mean absolute error of 10.8 for workers and 17.8 for students, while the mood's standard deviation is 17.14\cite{umematsu_forecasting_2020}.
+
+
 
 \subsection{Conclusion}
-1. Recap what you did. In about one paragraph recap what your research question was and how you tackled it.
-2. Highlight the big accomplishments. Spend another paragraph explaining the highlights of your results. These are the main results you want the reader to remember after they put down the paper, so ignore any small details.
-3. Conclude. Finally, finish off with a sentence or two that wraps up your paper. I find this can often be the hardest part to write. You want the paper to feel finished after they read these. One way to do this, is to try and tie your research to the “real world.” Can you somehow relate how your research is important outside of academia? Or, if your results leave you with a big question, finish with that. Put it out there for the reader to think about to.
+In this work, we presented a meta app that can import data from consumer devices and services and allows for manual tracking. The app allows the user to explore data via plotted time-lines and the relationship between variables through scatter plots and correlation coefficients.
+
+The app predicts the mood or any other chosen target variable by automatically aggregating the data into daily features and selecting the best ones to predict the user's mood.
+This study shows that multiple regression can explain more than half of the original variance.
+
+We strive for transparency by conveying information about confidence through p-values and prediction intervals and created the app as an open-source project.
+
+We hope the app helps users understand themselves better and improve their wellbeing, health, and physical \& cognitive performance.
 
 
-\color{black}
+
 
 %Backmatter
 %=============================================================================
