@@ -1,4 +1,206 @@
 
+@misc{noauthor_happimeter_nodate,
+	title = {Happimeter - {Apps} on {Google} {Play}},
+	url = {https://play.google.com/store/apps/details?id=com.happimeterteam.happimeter&hl=en&gl=US},
+	abstract = {Track your mood to identify what causes certain emotional states},
+	language = {en},
+	urldate = {2021-11-29},
+}
+
+@article{runge_inferring_2019,
+	title = {Inferring causation from time series in {Earth} system sciences},
+	volume = {10},
+	copyright = {2019 The Author(s)},
+	issn = {2041-1723},
+	url = {https://www.nature.com/articles/s41467-019-10105-3},
+	doi = {10.1038/s41467-019-10105-3},
+	abstract = {The heart of the scientific enterprise is a rational effort to understand the causes behind the phenomena we observe. In large-scale complex dynamical systems such as the Earth system, real experiments are rarely feasible. However, a rapidly increasing amount of observational and simulated data opens up the use of novel data-driven causal methods beyond the commonly adopted correlation techniques. Here, we give an overview of causal inference frameworks and identify promising generic application cases common in Earth system sciences and beyond. We discuss challenges and initiate the benchmark platform causeme.netto close the gap between method users and developers.},
+	language = {en},
+	number = {1},
+	urldate = {2021-11-25},
+	journal = {Nature Communications},
+	author = {Runge, Jakob and Bathiany, Sebastian and Bollt, Erik and Camps-Valls, Gustau and Coumou, Dim and Deyle, Ethan and Glymour, Clark and Kretschmer, Marlene and Mahecha, Miguel D. and Muñoz-Marí, Jordi and van Nes, Egbert H. and Peters, Jonas and Quax, Rick and Reichstein, Markus and Scheffer, Marten and Schölkopf, Bernhard and Spirtes, Peter and Sugihara, George and Sun, Jie and Zhang, Kun and Zscheischler, Jakob},
+	month = jun,
+	year = {2019},
+	note = {Bandiera\_abtest: a
+Cc\_license\_type: cc\_by
+Cg\_type: Nature Research Journals
+Number: 1
+Primary\_atype: Reviews
+Publisher: Nature Publishing Group
+Subject\_term: Climate sciences;Computational science;Databases;Environmental sciences;Statistical physics, thermodynamics and nonlinear dynamics
+Subject\_term\_id: climate-sciences;computational-science;databases;environmental-sciences;statistical-physics-thermodynamics-and-nonlinear-dynamics},
+	keywords = {Climate sciences, Computational science, Databases, Environmental sciences, Statistical physics, thermodynamics and nonlinear dynamics},
+	pages = {13},
+}
+
+@unpublished{neal_introduction_2020,
+	title = {Introduction to {Causal} {Inference}},
+	language = {en},
+	author = {Neal, Brady},
+	month = dec,
+	year = {2020},
+}
+
+@article{eberhardt_introduction_2017,
+	title = {Introduction to the foundations of causal discovery},
+	volume = {3},
+	issn = {2364-415X, 2364-4168},
+	url = {http://link.springer.com/10.1007/s41060-016-0038-6},
+	doi = {10.1007/s41060-016-0038-6},
+	abstract = {This article presents an overview of several known approaches to causal discovery. It is organized by relating the different fundamental assumptions that the methods depend on. The goal is to indicate that for a large variety of different settings the assumptions necessary and sufﬁcient for causal discovery are now well understood.},
+	language = {en},
+	number = {2},
+	urldate = {2021-11-25},
+	journal = {International Journal of Data Science and Analytics},
+	author = {Eberhardt, Frederick},
+	month = mar,
+	year = {2017},
+	pages = {81--91},
+}
+
+@article{glymour_review_2019,
+	title = {Review of {Causal} {Discovery} {Methods} {Based} on {Graphical} {Models}},
+	volume = {10},
+	issn = {1664-8021},
+	url = {https://www.frontiersin.org/article/10.3389/fgene.2019.00524},
+	doi = {10.3389/fgene.2019.00524},
+	abstract = {A fundamental task in various disciplines of science, including biology, is to find underlying causal relations and make use of them. Causal relations can be seen if interventions are properly applied; however, in many cases they are difficult or even impossible to conduct. It is then necessary to discover causal relations by analyzing statistical properties of purely observational data, which is known as causal discovery or causal structure search. This paper aims to give a introduction to and a brief review of the computational methods for causal discovery that were developed in the past three decades, including constraint-based and score-based methods and those based on functional causal models, supplemented by some illustrations and applications.},
+	urldate = {2021-11-25},
+	journal = {Frontiers in Genetics},
+	author = {Glymour, Clark and Zhang, Kun and Spirtes, Peter},
+	year = {2019},
+	pages = {524},
+}
+
+@article{shimizu_linear_2006,
+	title = {A {Linear} {Non}-{Gaussian} {Acyclic} {Model} for {Causal} {Discovery}},
+	abstract = {In recent years, several methods have been proposed for the discovery of causal structure from non-experimental data. Such methods make various assumptions on the data generating process to facilitate its identiﬁcation from purely observational data. Continuing this line of research, we show how to discover the complete causal structure of continuous-valued data, under the assumptions that (a) the data generating process is linear, (b) there are no unobserved confounders, and (c) disturbance variables have non-Gaussian distributions of non-zero variances. The solution relies on the use of the statistical method known as independent component analysis, and does not require any pre-speciﬁed time-ordering of the variables. We provide a complete Matlab package for performing this LiNGAM analysis (short for Linear Non-Gaussian Acyclic Model), and demonstrate the effectiveness of the method using artiﬁcially generated data and real-world data.},
+	language = {en},
+	author = {Shimizu, Shohei and Hoyer, Patrik O and Hyvarinen, Aapo and Kerminen, Antti},
+	year = {2006},
+	pages = {28},
+}
+
+@article{kalainathan_structural_2018,
+	title = {Structural {Agnostic} {Modeling}: {Adversarial} {Learning} of {Causal} {Graphs}},
+	shorttitle = {Structural {Agnostic} {Modeling}},
+	url = {http://arxiv.org/abs/1803.04929},
+	abstract = {A new causal discovery method, Structural Agnostic Modeling (SAM), is presented in this paper. Leveraging both conditional independencies and distributional asymmetries in the data, SAM aims to ﬁnd the underlying causal structure from observational data. The approach is based on a game between different players estimating each variable distribution conditionally to the others as a neural net, and an adversary aimed at discriminating the overall joint conditional distribution, and that of the original data. A learning criterion combining distribution estimation, sparsity and acyclicity constraints is used to enforce the end-to-end optimization of the graph structure and parameters through stochastic gradient descent. Besides a theoretical analysis of the approach in the large sample limit, SAM is extensively experimentally validated on synthetic and real data.},
+	language = {en},
+	urldate = {2021-11-10},
+	journal = {arXiv:1803.04929 [stat]},
+	author = {Kalainathan, Diviyan and Goudet, Olivier and Guyon, Isabelle and Lopez-Paz, David and Sebag, Michèle},
+	year = {2018},
+	note = {arXiv: 1803.04929},
+	keywords = {Statistics - Machine Learning},
+}
+
+@book{pearl_book_2018,
+	address = {New York},
+	title = {The book of why: the new science of cause and effect},
+	isbn = {978-0-465-09761-6},
+	shorttitle = {The book of why},
+	abstract = {"Everyone has heard the claim, "Correlation does not imply causation." What might sound like a reasonable dictum metastasized in the twentieth century into one of science's biggest obstacles, as a legion of researchers became unwilling to make the claim that one thing could cause another. Even two decades ago, asking a statistician a question like "Was it the aspirin that stopped my headache?" would have been like asking if he believed in voodoo, or at best a topic for conversation at a cocktail party rather than a legitimate target of scientific inquiry. Scientists were allowed to posit only that the probability that one thing was associated with another. This all changed with Judea Pearl, whose work on causality was not just a victory for common sense, but a revolution in the study of the world"--},
+	language = {en},
+	publisher = {Basic Books},
+	author = {Pearl, Judea and Mackenzie, Dana},
+	year = {2018},
+	keywords = {Causation, Inference},
+}
+
+@article{aliferis_time_nodate,
+	title = {Time and {Sample} {Efficient} {Discovery} of {Markov} {Blankets} and {Direct} {Causal} {Relations}},
+	abstract = {Data Mining with Bayesian Network learning has two important characteristics: under broad conditions learned edges between variables correspond to causal inﬂuences, and second, for every variable T in the network a special subset (Markov Blanket) identiﬁable by the network is the minimal variable set required to predict T . However, all known algorithms learning a complete BN do not scale up beyond a few hundred variables. On the other hand, all known sound algorithms learning a local region of the network require an exponential number of training instances to the size of the learned region.},
+	language = {en},
+	author = {Aliferis, Constantin and Statnikov, Alexander},
+	pages = {6},
+}
+
+@book{spirtes_causation_1993,
+	address = {New York, NY},
+	series = {Lecture {Notes} in {Statistics}},
+	title = {Causation, {Prediction}, and {Search}},
+	volume = {81},
+	isbn = {978-1-4612-7650-0 978-1-4612-2748-9},
+	url = {http://link.springer.com/10.1007/978-1-4612-2748-9},
+	language = {en},
+	urldate = {2021-11-23},
+	publisher = {Springer New York},
+	author = {Spirtes, Peter and Glymour, Clark and Scheines, Richard},
+	editor = {Berger, J. and Fienberg, S. and Gani, J. and Krickeberg, K. and Olkin, I. and Singer, B.},
+	year = {1993},
+	doi = {10.1007/978-1-4612-2748-9},
+}
+
+@book{shanmugam_elements_2018,
+	title = {Elements of causal inference: foundations and learning algorithms},
+	volume = {88},
+	shorttitle = {Elements of causal inference},
+	url = {https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1505197},
+	language = {en},
+	urldate = {2021-11-10},
+	author = {Shanmugam, Ramalingam},
+	month = nov,
+	year = {2018},
+}
+
+@unpublished{sontag_lecture_nodate,
+	title = {Lecture 14: {Causal} {Inference}, {Part} {I}},
+	language = {en},
+	author = {Sontag, David and Szolovits, Peter and Guryev, Georgy},
+}
+
+@unpublished{sontag_lecture_nodate-1,
+	title = {Lecture 15: {Causal} {Inference} {Part} {II}},
+	language = {en},
+	author = {Sontag, David and Szolovits, Peter},
+}
+
+@book{pearl_causality_2000,
+	address = {Cambridge, U.K. ; New York},
+	title = {Causality: models, reasoning, and inference},
+	isbn = {978-0-521-89560-6 978-0-521-77362-1},
+	shorttitle = {Causality},
+	publisher = {Cambridge University Press},
+	author = {Pearl, Judea},
+	year = {2000},
+	keywords = {Causation, Probabilities},
+}
+
+@book{mcelreath_statistical_2018,
+	edition = {1},
+	title = {Statistical {Rethinking}: {A} {Bayesian} {Course} with {Examples} in {R} and {Stan}},
+	isbn = {978-1-315-37249-5},
+	shorttitle = {Statistical {Rethinking}},
+	url = {https://www.taylorfrancis.com/books/9781315362618},
+	language = {en},
+	urldate = {2021-11-22},
+	publisher = {Chapman and Hall/CRC},
+	author = {McElreath, Richard},
+	month = jan,
+	year = {2018},
+	doi = {10.1201/9781315372495},
+}
+
+@article{pearl_causal_2016,
+	title = {Causal {Inference} in {Statistics}},
+	language = {en},
+	author = {Pearl, Judea},
+	year = {2016},
+	pages = {159},
+}
+
+@article{reick_estimation_2020,
+	title = {Estimation of {Structural} {Causal} {Models} by {Variational} {Gaussian} {Process} {Regression}},
+	abstract = {One major drawback of state-of-the-art artiﬁcial intelligence is its lack of explainability. One approach to solve the problem is taking causality into account instead of only correlations. Causal mechanisms can be described by structural causal models. In this work, we propose a method to estimate bivariate structural causal models by combining normalizing ﬂows, which can be applied in density estimation, and variational Gaussian process regression. Though the method proves useful with artiﬁcial datasets, identifying cause and eﬀect on practical data is still an unresolved problem.},
+	language = {en},
+	author = {Reick, Nico},
+	month = nov,
+	year = {2020},
+	pages = {73},
+}
+
 @article{benjamini_controlling_1995,
 	title = {Controlling the {False} {Discovery} {Rate}: {A} {Practical} and {Powerful} {Approach} to {Multiple} {Testing}},
 	volume = {57},
@@ -291,7 +493,7 @@
 	note = {ISSN: 0304-3959},
 }
 
-@article{shanmugam_elements_2018,
+@article{shanmugam_elements_2018-1,
 	title = {Elements of causal inference: foundations and learning algorithms},
 	volume = {88},
 	issn = {0094-9655, 1563-5163},
@@ -321,21 +523,7 @@
 	keywords = {Computer Science - Artificial Intelligence, Computer Science - Machine Learning, Statistics - Machine Learning},
 }
 
-@article{sontag_lecture_nodate,
-	title = {Lecture 14: {Causal} {Inference}, {Part} {I}},
-	language = {en},
-	author = {Sontag, David and Szolovits, Peter and Guryev, Georgy},
-	pages = {12},
-}
-
-@article{sontag_lecture_nodate-1,
-	title = {Lecture 15: {Causal} {Inference} {Part} {II}},
-	language = {en},
-	author = {Sontag, David and Szolovits, Peter},
-	pages = {8},
-}
-
-@book{pearl_causality_2000,
+@book{pearl_causality_2000-1,
 	address = {Cambridge, U.K. ; New York},
 	title = {Causality: models, reasoning, and inference},
 	isbn = {978-0-521-89560-6 978-0-521-77362-1},
@@ -345,23 +533,6 @@
 	author = {Pearl, Judea},
 	year = {2000},
 	keywords = {Causation, Probabilities},
-}
-
-@article{shanmugam_elements_2018-1,
-	title = {Elements of causal inference: foundations and learning algorithms},
-	volume = {88},
-	issn = {0094-9655, 1563-5163},
-	shorttitle = {Elements of causal inference},
-	url = {https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1505197},
-	doi = {10.1080/00949655.2018.1505197},
-	language = {en},
-	number = {16},
-	urldate = {2021-11-10},
-	journal = {Journal of Statistical Computation and Simulation},
-	author = {Shanmugam, Ramalingam},
-	month = nov,
-	year = {2018},
-	pages = {3248--3248},
 }
 
 @article{castro_causality_2020,
@@ -418,28 +589,6 @@
 	month = feb,
 	year = {2019},
 	pages = {54--60},
-}
-
-@article{pearl_causal_nodate,
-	title = {Causal {Inference} in {Statistics}},
-	language = {en},
-	author = {Pearl, Judea},
-	pages = {159},
-}
-
-@article{kalainathan_structural_2021,
-	title = {Structural {Agnostic} {Modeling}: {Adversarial} {Learning} of {Causal} {Graphs}},
-	shorttitle = {Structural {Agnostic} {Modeling}},
-	url = {http://arxiv.org/abs/1803.04929},
-	abstract = {A new causal discovery method, Structural Agnostic Modeling (SAM), is presented in this paper. Leveraging both conditional independencies and distributional asymmetries in the data, SAM aims to ﬁnd the underlying causal structure from observational data. The approach is based on a game between different players estimating each variable distribution conditionally to the others as a neural net, and an adversary aimed at discriminating the overall joint conditional distribution, and that of the original data. A learning criterion combining distribution estimation, sparsity and acyclicity constraints is used to enforce the end-to-end optimization of the graph structure and parameters through stochastic gradient descent. Besides a theoretical analysis of the approach in the large sample limit, SAM is extensively experimentally validated on synthetic and real data.},
-	language = {en},
-	urldate = {2021-11-10},
-	journal = {arXiv:1803.04929 [stat]},
-	author = {Kalainathan, Diviyan and Goudet, Olivier and Guyon, Isabelle and Lopez-Paz, David and Sebag, Michèle},
-	month = sep,
-	year = {2021},
-	note = {arXiv: 1803.04929},
-	keywords = {Statistics - Machine Learning},
 }
 
 @book{escalante_explainable_2018,
